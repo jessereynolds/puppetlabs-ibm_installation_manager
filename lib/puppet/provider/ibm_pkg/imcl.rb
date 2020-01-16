@@ -91,18 +91,18 @@ Puppet::Type.type(:ibm_pkg).provide(:imcl) do
     installed_xml_path = nil
     user_home = find_user_home(user) unless user == 'root'
 
-    user_path = if user == 'root'
-                  '/var/ibm/'
-                else
-                  "#{user_home}/var/ibm/"
-                end
+    user_path = ( user == 'root' ) ? '/var/ibm/' : "#{user_home}/var/ibm/"
 
     if File.exist? user_path
-      Find.find(user_path) { |path| installed_xml_path = path if path =~ %r{InstallationManager/installed.xml$} }
+      Find.find(user_path) { |path|
+        installed_xml_path = path if path =~ %r{InstallationManager/installed.xml$}
+      }
+    else
+      raise("Could not see a directory for user_path at #{user_path}")
     end
 
-    return installed_xml_path if File.file?(installed_xml_path)
-    raise("Could not find installed.xml file at #{user_path}/InstallationManager/installed.xml")
+    return installed_xml_path if installed_xml_path and File.file?(installed_xml_path)
+    raise("Could not find file InstallationManager/installed.xml under #{user_path}")
   end
 
   # returns a file handle by opening the install file
