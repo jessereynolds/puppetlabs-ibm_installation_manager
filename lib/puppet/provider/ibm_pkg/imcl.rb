@@ -98,7 +98,7 @@ Puppet::Type.type(:ibm_pkg).provide(:imcl) do
         installed_xml_path = path if path =~ %r{InstallationManager/installed.xml$}
       }
     else
-      raise("Could not see a directory for user_path at #{user_path}")
+      raise("Could not see a directory for user_path at '#{user_path}' with user '#{user}'")
     end
 
     return installed_xml_path if installed_xml_path and File.file?(installed_xml_path)
